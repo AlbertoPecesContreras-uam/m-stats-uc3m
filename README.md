@@ -1,6 +1,6 @@
 # 🧠 EEG Resting-State Analysis Pipeline
 
-Master's Final Thesis - Universidad Carlos III de Madrid
+**Master's Final Thesis - Universidad Carlos III de Madrid**
 
 **Thesis title:** Non-parametric EEG Spectral Decomposition via Whittle-EM: Effects of tDCS and Exercise
 
@@ -16,55 +16,33 @@ Master's Final Thesis - Universidad Carlos III de Madrid
 
 ## 🧾 Description
 
-This repository contains the complete source code for the analytical pipeline of the master's thesis. The project analyses resting-state EEG recordings from a three-arm intervention study (Control, Sham, Experimental) at three time points (PRE, POST, Follow-Up) and two recording conditions (Eyes Open, Eyes Closed).
-
-The pipeline is divided into four sequential modules:
+This repository contains the complete source code for the analytical pipeline of the master's thesis. The project analyses resting-state EEG recordings from a three-arm intervention study (Control, Sham, Experimental) at three time points (PRE, POST, Follow-Up) and two recording conditions (Eyes Open, Eyes Closed). The pipeline is divided into four sequential modules:
 
 ```
        EDF recordings
-
              │
-
              ▼
 ┌─────────────────────────┐
-
-│   01  Preprocessing    │  ICA-based artefact removal MATLAB R2024a
-
+│   01  Preprocessing     │  ICA-based artefact removal MATLAB R2024a
 │        (MATLAB)         │  → preprocessed CSVs (20 ch × N)
-
 └────────────┬────────────┘
-
              │
-
              ▼
 ┌─────────────────────────┐
-
 │    02  Connectivity     │  Spectral coherence (C) and Python 3.12.2
-
 │         (Python)        │  squared Pearson correlation (ρ²)
-
 └────────────┬────────────┘
-
              │
-
              ▼
 ┌─────────────────────────┐
-
 │      03  Spectral       │  Xi-Pi decomposition → periodic (Π)  Python 3.12.2
-
 │         (Python)        │  and aperiodic (Ξ) components
-
 └────────────┬────────────┘
-
              │
-
              ▼
 ┌─────────────────────────┐
-
-│     04  Statistics      │  Bayesian LMMs with full posterior    Python 3.12.2
-
+│        04  Energy       │  Bayesian LMMs with full posterior    Python 3.12.2
 │         (Python)        │  uncertainty quantification
-
 └─────────────────────────┘
 ```
 
@@ -74,61 +52,33 @@ The pipeline is divided into four sequential modules:
 
 ```
 .
-
 ├── 01_preprocessing/
-
-│   ├── 01_fitGlobalICA.m          # Fit group-level ICA model on concatenated dataset
-
-│   ├── 02_runPreprocessing.m      # Apply ICA per recording, remove blink artefacts
-
+│   ├── 01_fitGlobalICA.m           # Fit group-level ICA model on concatenated dataset
+│   ├── 02_runPreprocessing.m       # Apply ICA per recording, remove blink artefacts
 │   ├── utils/
-
-│   │   ├── readEDF.m              # Read .edf files into MATLAB structs
-
-│   │   ├── applyPassBand.m        # Zero-phase Butterworth bandpass filter [0.1–30 Hz]
-
-│   │   ├── StructToDouble.m       # Convert EEG struct → [channels × samples] matrix
-
-│   │   ├── DoubleToStruct.m       # Convert matrix → EEG struct
-
-│   │   └── extractDirectory.m     # Build folder tree structure from a root path
-
-│   ├── pca_ica/                   # FastICA implementation (third-party)
-
+│   │   ├── readEDF.m               # Read .edf files into MATLAB structs
+│   │   ├── applyPassBand.m         # Zero-phase Butterworth bandpass filter [0.1–30 Hz]
+│   │   ├── StructToDouble.m        # Convert EEG struct → [channels × samples] matrix
+│   │   ├── DoubleToStruct.m        # Convert matrix → EEG struct
+│   │   └── extractDirectory.m      # Build folder tree structure from a root path
+│   ├── pca_ica/                    # FastICA implementation (third-party)
 │   └── demo/
-
-│       └── demo_eyeBlinkRemoval.m # Diagnostic: visualise ICA blink removal on one file
-
+│       └── demo_eyeBlinkRemoval.m  # Diagnostic: visualise ICA blink removal on one file
 │
-
 ├── 02_connectivity/
-
-│   ├── config.py                  # Shared constants (regions, groups, Sham IDs)
-
-│   ├── 01_compute_coherence.py    # Magnitude-squared coherence per region pair
-
-│   ├── 02_compute_correlation.py  # Pearson ρ² via Fisher's Z averaging
-
-│   └── connectivity_analysis.ipynb# LMMs + Δ connectivity heatmaps
-
+│   ├── config.py                   # Shared constants (regions, groups, Sham IDs)
+│   ├── 01_compute_coherence.py     # Magnitude-squared coherence per region pair
+│   ├── 02_compute_correlation.py   # Pearson ρ² via Fisher's Z averaging
+│   └── connectivity_analysis.ipynb # LMMs + Δ connectivity heatmaps
 │
-
 ├── 03_spectral/
-
-│   ├── xipi.py                    # Xi-Pi algorithm (Python port of Hu et al., 2024)
-
-│   └── 01_extract_components.py   # Batch Xi-Pi decomposition + time-domain reconstruction
-
+│   ├── xipi.py                     # Xi-Pi algorithm (Python port of Hu et al., 2024)
+│   └── 01_extract_components.py    # Batch Xi-Pi decomposition + time-domain reconstruction
 │
-
 ├── 04_statistics/
-
-│   └── bayesian_lmm.ipynb         # Bayesian LMMs for Π and Ξ oscillatory energy
-
+│   └── bayesian_lmm.ipynb          # Bayesian LMMs for Π and Ξ oscillatory energy
 │
-
 ├── .gitignore
-
 └── README.md
 ```
 
@@ -139,39 +89,24 @@ The pipeline is divided into four sequential modules:
 ### MATLAB (module 01)
 
 - MATLAB R2024a
-
 - Signal Processing Toolbox
-
 - The `pca_ica/` folder must be on the MATLAB path (handled automatically by the scripts via `addpath`)
-
-
 
 ### Python (modules 02–04)
 
 Python 3.12.2. Key packages:
 
 | Package | Version | Purpose |
-
 |---|---|---|
-
 | `numpy` | ≥ 1.26 | Numerical computation |
-
 | `pandas` | ≥ 2.2 | Data wrangling |
-
 | `scipy` | ≥ 1.13 | Signal processing (Welch, CSD, filters) |
-
 | `joblib` | ≥ 1.4 | Parallel computation |
-
 | `pyarrow` | ≥ 16 | Parquet I/O |
-
 | `pymc` | ≥ 5.10 | Bayesian inference |
-
 | `arviz` | ≥ 0.18 | MCMC diagnostics and HDI |
-
 | `scikit-learn` | ≥ 1.4 | Isotonic regression (Xi-Pi) |
-
 | `matplotlib` | ≥ 3.8 | Figures |
-
 | `seaborn` | ≥ 0.13 | Heatmaps |
 
 ---
@@ -201,21 +136,16 @@ run('01_preprocessing/02_runPreprocessing.m')
 ### 02 · Connectivity (Python)
 
 ```bash
-
 cd 02_connectivity
 
 # Compute spectral coherence for all subjects
-
 python 01_compute_coherence.py
 
 # Compute Pearson correlation for all subjects
-
 python 02_compute_correlation.py
 
 # Open the notebook for LMM modelling and visualisation
-
 jupyter notebook connectivity_analysis.ipynb
-
 ```
 
 **Output:** `coherence_results_by_regions.parquet`, `pearson_results_by_regions.parquet`.
@@ -223,13 +153,10 @@ jupyter notebook connectivity_analysis.ipynb
 ### 03 · Spectral Decomposition (Python)
 
 ```bash
-
 cd 03_spectral
 
 # Run Xi-Pi decomposition on all preprocessed recordings
-
 python 01_extract_components.py
-
 ```
 
 **Output:** one CSV per subject with `_xi` and `_pi` columns per channel, plus `xipi_metrics_summary.csv` with reconstruction quality metrics.
@@ -237,11 +164,8 @@ python 01_extract_components.py
 ### 04 · Statistics (Python)
 
 ```bash
-
 cd 04_energy
-
 jupyter notebook bayesian_lmm.ipynb
-
 ```
 
 Run the **Periodic (Π)** section first, then the **Aperiodic (Ξ)** section. The notebook fits four Bayesian LMMs (2 components × 2 analysis windows) and generates publication-ready posterior distribution figures.
@@ -278,11 +202,8 @@ Linear Mixed-Effects Models are specified in a Bayesian framework using PyMC. Th
 Two analysis windows are modelled:
 
 | Window | Groups | Fixed effects |
-
 |---|---|---|
-
 | PRE → POST | CTRL, SHAM, EXP | group + instant + group×instant + region |
-
 | POST → FU | SHAM, EXP | group + instant + group×instant + region |
 
 ---
@@ -292,8 +213,3 @@ Two analysis windows are modelled:
 Hu, S., Zhang, Z., Zhang, X., Wu, X., & Valdes-Sosa, P. A. (2024). Xi-Pi: A nonparametric model for neural power spectra decomposition. *IEEE Journal of Biomedical and Health Informatics*, *28*(5), 2624–2635. https://doi.org/10.1109/JBHI.2024.3364499
 
 Original Xi-Pi MATLAB implementation: https://github.com/ShiangHu/Xi-Pi
-
-
-
-\---
-
