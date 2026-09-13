@@ -176,7 +176,7 @@ Run the **Periodic (Π)** section first, then the **Aperiodic (Ξ)** section. Th
 
 ### EEG recording
 
-Resting-state EEG recorded at \*f\*s = 500 Hz, 20 scalp electrodes (10–20 system), two 3-minute conditions: Eyes Open (EO) and Eyes Closed (EC).
+Resting-state EEG recorded at *f*s = 500 Hz, 20 scalp electrodes (10–20 system), two 3-minute conditions: Eyes Open (EO) and Eyes Closed (EC).
 
 ### Preprocessing
 
