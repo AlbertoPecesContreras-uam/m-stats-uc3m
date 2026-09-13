@@ -1,4 +1,4 @@
-\# 🧠 EEG Resting-State Analysis Pipeline
+# 🧠 EEG Resting-State Analysis Pipeline
 
 Master's Final Thesis - Universidad Carlos III de Madrid
 
